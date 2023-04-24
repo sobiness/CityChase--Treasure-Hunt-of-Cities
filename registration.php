@@ -37,7 +37,8 @@
     } else {
 ?>
     <form class="form" action="" method="post">
-        <h1 class="login-title">TreshMap</h1>
+        <h1 class="login-title">CityChase</h1>
+        <h3 class="login-title">Treasure Hunt of Cities</h3>
         <input type="text" class="login-input" name="username" placeholder="Username" required />
         <input type="text" class="login-input" name="email" placeholder="Email Adress">
         <input type="password" class="login-input" name="password" placeholder="Password">
