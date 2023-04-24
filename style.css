@@ -1,8 +1,7 @@
 body {
     background-color: #F5DEB3;
     font-family: "Times New Roman", serif;
-    
-    background-repeat: repeat;
+    background-image: url("https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.dreamstime.com%2Fillustration%2Fblank-treasure-map.html&psig=AOvVaw01OJV3O2M9eLqboCZ1p_xu&ust=1682386041985000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCNjpqMWuwf4CFQAAAAAdAAAAABAE.jpg");
 }
   
   .form {
@@ -22,7 +21,7 @@ body {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 2px 2px #000000;
+    text-shadow: 2px 2px #c1a188;
   }
   
   .login-input {
@@ -45,7 +44,7 @@ body {
   
   .login-button {
     color: #FFFFFF;
-    background: #CD5C5C;
+    background: linear-gradient(to bottom right, #CD5C5C, #8B0000);
     border: 0;
     outline: 0;
     width: 100%;
@@ -58,9 +57,13 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    
-    background-repeat: repeat-x;
-    text-shadow: 2px 2px #000000;
+    box-shadow: 2px 2px 5px #888888;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .login-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 3px 3px 8px #888888;
   }
   
   .link {
@@ -84,6 +87,15 @@ body {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
     font-size: 14px;
     color: #800000;
-    text-shadow: 1px 1px #000000;
+    text-shadow: 1px 1px #d79494;
+  }
+  h2 {
+    font-weight: normal;
+    text-align: center;
+    margin-top: 30px;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 14px;
+    color: #800000;
+    text-shadow: 1px 1px #d79494;
   }
   
