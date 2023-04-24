@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Treasure Hunt Game</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/5.1.6/turf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/geodesy@1.1.2/latlon-spherical.js"></script>
+    
+
+
+    <style>
+        /* Set the map container to fill the entire viewport */
+        body,
+        html,
+        #map {
+            margin: 0;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false" onkeydown="return false;" onmousedown="return false;">
+    <input type="button" value="Restart Game" onClick="window.location.reload(true)">
+
+    <div id="map"></div>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+    <script type="text/javascript" src="worldcities.json"></script>
+    <script>$(document).bind("contextmenu",function(e) {
+        e.preventDefault();
+        });</script>
+
+
+    <script>
+        
+        
+        // Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
+        mapboxgl.accessToken =
+            'pk.eyJ1Ijoic2tlYWx5IiwiYSI6ImNsZ3Fibzl3bjA3bnAzZW9oMHZlenRlY2QifQ.awEHYWiDG47MZ18ZbpG_6g';
+        var treasureLocation;
+        
+        const city_coordinates = [
+        [-0.1278, 51.5074, "The Crown Jewels reside in a tower here", "Londxn, XP", 
+        "Hint 1: The city is home to the British Museum and the Tower of London, where the Crown Jewels are kept.",
+        "Hint 2: Look for the iconic clock tower known as Big Ben and the official residence of the British monarch, Buckingham Palace.",
+        "Hint 3: This city hosted the 2012 Summer Olympics and has a rich history dating back to Roman times.",
+        "Hint 4: dwhqj", 
+        "Hint 5: The timezone of this city is GMT."],
+
+            [-118.2437, 34.0522, "The City of Angels", "Los Angeles, USA",        
+             "Hint 1: Where dreams come true in the West Coast",        
+             "Hint 2: A place where stars are born and legends are made",        
+             "Hint 3: Home of sun-kissed beaches and blockbuster movies",        
+             "Hint 4: jnvfnav", 
+             "Hint 5: GMT-7"],
+             [-87.6298, 41.8781, "The Windy City", "Chicago, USA",         
+             "Hint 1: A metropolis by the Great Lakes",        
+             "Hint 2: A city of steel and glass, where the sky is the limit",       
+            "Hint 3: The birthplace of blues and the house of pizza pies",        
+            "Hint 4: fkqduh",         
+            "Hint 5: GMT-5"    
+            ],
+            [-95.3698, 29.7604, "Space Center Houston","Houston, USA",     
+            "Hint 1: Where cowboys and oil rigs reign supreme",    
+            "Hint 2: Home to the largest medical center in the world",    
+            "Hint 3: The birthplace of Beyonce",     
+            "Hint 4: Khyqrxv, XVR", 
+            "Hint 5: Central Standard Time"    ],
+    
+            [-97.1384, 49.8951, "The Forks National Historic Site", "Winnipeg, Canada",     
+            "Hint 1: The city that's known as the 'Gateway to the West'",    
+            "Hint 2: Famous for its frigid winters and warm hearts",    
+            "Hint 3: The city that hosts the world's largest winter festival",    
+            "Hint 4: Zlqqbq, Fdqwhu", 
+            "Hint 5: Central Standard Time"    ],
+            [-73.5673, 45.5017, "Notre-Dame Basilica of Montreal", "Montreal, Canada",     
+            "Hint 1: Follow the path of the St. Lawrence River to find me",     
+            "Hint 2: Look for the city that's a fusion of European and North American culture",     
+            "Hint 3: The Habs have won 24 Stanley Cups in my city",     
+            "Hint 4: Pqrwph, Fubcynp", 
+            "Hint 5: Eastern Standard Time"    ],
+            [-79.3828, 43.6519, "CN Tower", "Toronto, Canada",     
+            "Hint 1: Follow the shores of Lake Ontario to reach my land",     
+            "Hint 2: Look for the city where the world comes to meet",     
+            "Hint 3: The Raptors have won one NBA championship in my city",     
+            "Hint 4: Wruulw, Fqcedqo", 
+            "Hint 5: Eastern Standard Time"    ],
+            [-80.1918, 25.7617, "South Beach", "Miami, USA",     
+            "Hint 1: Look for the city that's the southernmost major city in the continental USA",     
+            "Hint 2: Find the place where the heat is always on",     
+            "Hint 3: Wade into my city to catch a glimpse of the Miami Heat",     
+            "Hint 4: Pljxho, Xqfl", 
+            "Hint 5: Eastern Standard Time"    ],
+            [-117.1611, 32.7157, "San Diego Zoo", "San Diego, USA",     
+            "Hint 1: Follow the Pacific Coast Highway to find my city",     
+            "Hint 2: Look for the city where the zoo is bigger than the airport",     
+            "Hint 3: Sip some beer and soak up the sun in my city",     
+            "Hint 4: Vdqjfdu, Vfdnhu", 
+            "Hint 5: Pacific Standard Time"    ],
+            [-123.1207, 49.2827, "Capilano Suspension Bridge", "Vancouver, Canada",
+"Hint 1: A city on the Pacific coast surrounded by mountains and rainforest",
+"Hint 2: Famous for its suspension bridge over a canyon",
+"Hint 3: Hosted the Winter Olympics in 2010",
+"Hint 4: Ydqxphq, Fubcber Pnanqn",
+"Hint 5: Pacific Time Zone"
+],
+[-149.9003, 61.2181, "Denali National Park", "Anchorage, USA",
+"Hint 1: The largest city in Alaska, known for its rugged wilderness",
+"Hint 2: Home to the Iditarod Trail Sled Dog Race",
+"Hint 3: Located on the shores of the Cook Inlet",
+"Hint 4: Dqkrzoh, XQD",
+"Hint 5: Alaska Time Zone"
+],
+[-157.8583, 21.3069, "Diamond Head State Monument", "Honolulu, USA",
+"Hint 1: An island paradise in the middle of the Pacific Ocean",
+"Hint 2: Home of the USS Arizona Memorial at Pearl Harbor",
+"Hint 3: Famous for its beaches and surfing culture",
+"Hint 4: Krqh\orz, JXFN",
+"Hint 5: Hawaii-Aleutian Time Zone"
+],
+[-99.1332, 19.4326, "Zócalo", "Mexico City, Mexico",
+"Hint 1: The vibrant capital of Mexico",
+"Hint 2: Known for its rich history and delicious food",
+"Hint 3: Home to some of the world's best museums and art galleries",
+"Hint 4: Phrog Pvru, PDGH",
+"Hint 5: Central Time Zone"
+],
+[-58.3816, -34.6037, "Obelisco de Buenos Aires", "Buenos Aires, Argentina",
+"Hint 1: The lively capital of Argentina",
+"Hint 2: Famous for its steak, wine, and tango music",
+"Hint 3: Home to colorful neighborhoods like La Boca and San Telmo",
+"Hint 4: Exphulv Frphy, Netnavf",
+"Hint 5: Argentina Time Zone"
+],
+[12.4964, 41.9028, "Colosseum", "Rome, Italy",         
+"Hint 1: Seek the capital of this boot-shaped land",        
+"Hint 2: Where ancient ruins and historic landmarks stand",        
+"Hint 3: Visit the home of Vatican City and the grand Colosseum",        
+"Hint 4: Wxyladyv", 
+"Hint 5: UTC+2"    ],
+    [2.3522, 48.8566, "Eiffel Tower", "Paris, France",         
+    "Hint 1: In the capital of a country with fine art, fashion, and cuisine",        
+    "Hint 2: Where the Eiffel Tower and Louvre Museum reign",        
+    "Hint 3: Wander the streets of the city of love, wine, and champagne",        
+    "Hint 4: Vikhoorq", 
+    "Hint 5: UTC+2"    ],
+    [139.6917, 35.6895, "Tokyo Tower", "Tokyo, Japan",         
+    "Hint 1: Venture to the capital of the land of the rising sun",        
+    "Hint 2: Known for its technology and vibrant culture, it's always fun",        
+    "Hint 3: Explore the bustling streets and see the Tokyo Tower glow",        
+    "Hint 4: Wrorkr", 
+    "Hint 5: UTC+9"    ],
+    [103.8539, 1.2903, "Marina Bay Sands", "Singapore, Singapore",         
+    "Hint 1: A sovereign city-state and island country in Southeast Asia",        
+    "Hint 2: Where modern architecture and clean streets never tire ya",        
+    "Hint 3: Home to Gardens by the Bay and the luxurious Marina Bay Sands",        
+    "Hint 4: Vplkmjguzr", "Hint 5: UTC+8"    ],
+    [-0.1287, 51.5074, "London Eye", "London eye, UK",         
+    "Hint 1: Find the famous Ferris wheel that's not hard to miss",        
+    "Hint 2: Enjoy panoramic views of the city's hustle and bliss",        
+    "Hint 3: On the South Bank of the Thames, this tourist spot will amaze",        
+    "Hint 4: Qrwh", "UTC+1"    ]
+];
+
+        
+        // Wait for DOM content to load before initializing the map
+        document.addEventListener('DOMContentLoaded', function () {
+            // Create a new Mapbox map
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 0], // Set initial center to 0, 0
+                zoom: 1 // Set initial zoom level
+            });
+
+            const getRandomTreasureLocation = () => {
+                const randomIndex = Math.floor(Math.random() * city_coordinates.length);
+                return city_coordinates[randomIndex];
+            };
+            // Set up game variables
+            var remainingTries = 10; // Number of remaining tries
+            var treasureLocation=getRandomTreasureLocation(); // Treasure location (longitude, latitude)
+            var distance = 10000;
+
+            
+          
+            
+            // Add click event listener on the map
+            map.on('click', function (e) {
+                var clickedLocation = [e.lngLat.lng, e.lngLat
+                        .lat
+                    ]; // Get clicked location coordinates
+                    distance = Math.round(turf.distance(turf.point(treasureLocation), turf.point(
+                        clickedLocation))); // Calculate distance to treasure location using Turf.js
+                        remainingTries--;
+                if (remainingTries > 0 && distance > 50) {
+                    //console.log('treasureLocation: ', treasureLocation);
+                    
+                  
+                    
+                    
+                    if (remainingTries == 5)
+                    {
+                        var popupContent = `<p>Remaining Tries: ${remainingTries}</p>
+                              <p>Distance: ${distance} kilometers</p>
+                              <p>Longitude: ${clickedLocation[0]} Latitude: ${clickedLocation[1]}</p>
+                              <p>${treasureLocation[8]}</p>`;}
+                    else if(remainingTries==4)
+                    {    var popupContent = `<p>Remaining Tries: ${remainingTries}</p>
+                              <p>Distance: ${distance} kilometers</p>
+                              <p>Longitude: ${clickedLocation[0]} Latitude: ${clickedLocation[1]}</p>
+                              <p>${treasureLocation[7]}</p>`;}
+                    else if(remainingTries==3)
+                    {    var popupContent = `<p>Remaining Tries: ${remainingTries}</p>
+                              <p>Distance: ${distance} kilometers</p>
+                              <p>Longitude: ${clickedLocation[0]} Latitude: ${clickedLocation[1]}</p>
+                              <p>${treasureLocation[6]}</p>`;}
+                    else if (remainingTries == 2)
+                    {       
+                            var popupContent = `<p>Remaining Tries: ${remainingTries}</p>
+                              <p>Distance: ${distance} kilometers</p>
+                              <p>Longitude: ${clickedLocation[0]} Latitude: ${clickedLocation[1]}</p>
+                              <p>${treasureLocation[5]}</p>`;}
+                    else if (remainingTries == 1)
+                    {       
+                            var popupContent = `<p>Remaining Tries: ${remainingTries}</p>
+                              <p>Distance: ${distance} kilometers</p>
+                              <p>Longitude: ${clickedLocation[0]} Latitude: ${clickedLocation[1]}</p>
+                              <p>${treasureLocation[4]}</p>`;}
+                    else {
+                    var popupContent = `<p>Remaining Tries: ${remainingTries}</p>
+                              <p>Distance: ${distance} kilometers</p>
+                              <p>Longitude: ${clickedLocation[0]} Latitude: ${clickedLocation[1]}</p>`;}
+                    new mapboxgl.Popup()
+                        .setLngLat(clickedLocation)
+                        .setHTML(popupContent)
+                        .addTo(map);
+                    map.addLayer({
+                        id: 'clickedLocation' + remainingTries,
+                        type: 'circle',
+                        source: {
+                            type: 'geojson',
+                            data: {
+                                type: 'FeatureCollection',
+                                features: [{
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: clickedLocation
+                                    }
+                                }]
+                            }
+                        },
+                        paint: {
+                            'circle-radius': 10,
+                            'circle-color': '#FF0000'
+                        }
+                    });}
+
+                    else if (remainingTries === 0 && distance > 50) {
+                        // Show the correct treasure location as a pop-up after 10 incorrect tries
+                        var correctPopupContent = `<p>Game Over!</p>
+                                       <p>The correct treasure location is at:</p>
+                                       <p>Longitude: ${treasureLocation[0]}</p>
+                                       <p>Latitude: ${treasureLocation[1]}</p>`;
+                        new mapboxgl.Popup()
+                            .setLngLat(treasureLocation)
+                            .setHTML(correctPopupContent)
+                            .addTo(map);
+                        map.addLayer({
+                            id: 'treasureLocation',
+                            type: 'circle',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: 'treasureLocation'
+                                        }
+                                    }]
+                                }
+                            },
+                            paint: {
+                                'circle-radius': 10,
+                                'circle-color': '#FF0000'
+                            }
+                        });
+                    }
+                 else if (remainingTries >= 0 && distance <= 50) {
+                    
+
+                    
+        
+                    alert('Awesome! You found the treasure!! ');
+                } 
+                else {
+                    alert(
+                        "Sorry, you've used up all your guesses. The treasure was located in " + treasureLocation[2] +" " + treasureLocation[3] + "."
+                    ); // Show game over message when no remaining tries
+                }
+                
+
+
+            });
+
+            // Function to convert degrees to radians
+            function deg2rad(deg) {
+                return deg * (Math.PI / 180);
+            }
+            
+
+
+        });
+        
+    </script>
+   
+         
+        
+        
+      
+   
+   
+      
+
+</body>
+
+</html>
