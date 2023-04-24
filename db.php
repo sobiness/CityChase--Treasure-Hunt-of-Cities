@@ -3,10 +3,10 @@
     // If you have not set database password on localhost then set empty.
 $url = parse_url(getenv("mysql://b1d65545ce4e8b:ea2f8a3b@us-cdbr-east-06.cleardb.net/heroku_1e9cc41f48fdcdc?reconnect=true"));
 
-$server = $url["us-cdbr-east-06.cleardb.net"];
-$username = $url["b1d65545ce4e8b"];
-$password = $url["ea2f8a3b"];
-$db = substr($url["heroku_1e9cc41f48fdcdc?reconnect"], 1);
+  $server = "us-cdbr-east-06.cleardb.net";
+    $username = "b1d65545ce4e8b";
+    $password = "ea2f8a3b";
+    $db = "heroku_1e9cc41f48fdcdc";
 
 $conn = new mysqli($server, $username, $password, $db);
    // $con = mysqli_connect("us-cdbr-east-06.cleardb.net","b1d65545ce4e8b","ea2f8a3b","LoginSystem");
