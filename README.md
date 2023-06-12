@@ -2,7 +2,7 @@
 City Chase: Treasure Hunt Game with Mapbox GL JS
 
 Introduction:
-The Treasure Hunt Game is a web-based interactive game that allows players to search for hidden treasure on a map using Mapbox GL JS, a powerful and versatile mapping library. The game is designed to be engaging, fun, and challenging, with players using their geographic skills to locate the hidden treasure by making guesses and receiving clues based on their proximity to the treasure location.
+The CityChase is a web-based interactive game that allows players to search for hidden treasure on a map using Mapbox GL JS, a powerful and versatile mapping library. The game is designed to be engaging, fun, and challenging, with players using their geographic skills to locate the hidden treasure by making guesses and receiving clues based on their proximity to the treasure location.
 
 Technologies Used:
 Mapbox GL JS: A JavaScript library that provides tools for displaying interactive maps with vector tiles, including features like zooming, panning, and adding custom markers.
@@ -24,16 +24,6 @@ The game interface includes a map displayed using Mapbox GL JS, with the ability
 The game interface also includes a pop-up message for displaying clues, messages, and game results.
 Optionally, the game interface may include additional features such as displaying the user's current location using the Geolocation API, or using the Mapbox API for geocoding services to allow the player to search for specific locations.
 
-
-Game Flow:
-The player starts the game by loading the game page in a web browser or accessing the game through a chat-based interface.
-The player is presented with the game interface, including the map, clues, and any additional features.
-The player makes guesses by clicking on locations on the map or using commands in a chat-based interface.
-The game logic checks the player's guesses and provides clues or game results based on the proximity to the treasure location.
-The player can continue to make guesses and receive clues until they correctly guess the treasure location or choose to end the game.
-The game can be ended by clicking on an "End Game" button or using a designated command.
-Once the game is ended, the actual treasure location is revealed to the player, and the game is over.
-The player can choose to start a new game by refreshing the page or using a designated command.
 
 Device Requirements :
 To run the code locally:
